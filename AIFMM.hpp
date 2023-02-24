@@ -1,4 +1,3 @@
-// #include "FMM2DTree_gen_rhs_x.hpp"
 #include "AIFMMTree.hpp"
 
 template <typename kerneltype>
@@ -10,30 +9,15 @@ public:
     A->createTree();
   	A->assign_Tree_Interactions();
     A->assign_Center_Location();
-    // A->outputExtendedSparseMatrix("tree.tex");
-    // A->outputGraphExtendedSparseMatrix("graph.tex");
-    // A->outputCropGraphExtendedSparseMatrix("cropGraph.tex");
-    // A->outputExtendedSparseMatrixLevel2("tree.tex");
-    // A->outputGraphMatrixLevel2("graphFullMatrix.tex");
-    // A->outputGraphExtendedSparseMatrixLevel2("graph.tex");
-    // A->outputCropGraphExtendedSparseMatrixLevel2("cropGraph.tex");
-    // exit(0);
-    // A->assignLeafChargeLocations();
   	A->assignChargeLocations();
     A->assignNonLeafChargeLocations();//actually it doesnt assign; clears it
-    // A->check55();
     A->getNodes();
     A->assemble_M2L();
     A->initialise_phase();
     A->initialise_P2P_Leaf_Level();
   }
-  // void factorize(Vec &rhs) {
-  //   A->assign_Leaf_rhs(rhs);
-  //   // std::cout << "here" << std::endl;
-  // 	A->eliminate_phase_efficient();
-  // }
+
   void factorize() {
-    // std::cout << "here" << std::endl;
   	A->eliminate_phase_efficient();
   }
   Vec solve(Vec &rhs) {
@@ -61,10 +45,7 @@ public:
   void backSubstitute3() {
     A->back_substitution_phase();
   }
-  // void backSubstitute() {
-  //   A->back_substitution_phase();
-  // }
-  void getPhi(Vec &phi) {
+  void getSolution(Vec &phi) {
     A->getx(phi);
     A->reorder(phi);
   }

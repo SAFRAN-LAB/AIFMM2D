@@ -18,11 +18,9 @@ public:
 		this->K					=	K;
 		this->tolerance_or_rank	=	tolerance_or_rank;
 		this->tol_ACA	=	tolerance_or_rank; //assuming it is tolerance
-		// this->tol_ACA = pow(10,-1.0*tolerance_or_rank);
 		this->row_indices = row_indices;
 		this->col_indices = col_indices;
 		this->tol_robust = pow(10.0,-10.0); //best is -10 for 16384 for gaussian
-		//best is -7 for 36864 for Lens
 	}
 
 	void maxAbsVector(const Vec& v, const std::set<int>& allowed_indices,
@@ -45,7 +43,6 @@ public:
 	    // Indices which have been used:
 	    int n_rows = row_indices.size();
 			int n_cols = col_indices.size();
-			// std::cout << "n_rows: " << n_rows << "	n_cols: " << n_cols << std::endl;
 			if (n_rows == 0 || n_cols == 0) {
 				computed_rank = 0;
 				return;
@@ -383,8 +380,6 @@ public:
 		if (N1 > N2) {
 			min = N2;
 		}
-		// Mat Ac = Mat(N1, min);
-		// Mat Ar = Mat(min, N2);
 
 		std::set<int> remaining_row_ind;
 		std::set<int> remaining_col_ind;
@@ -408,8 +403,6 @@ public:
 			if (l_local == N1) {
 				Ac = Mat(N1,computed_rank);
 				Ar = Mat(computed_rank,N2);
-				// Ac_modified = Ac.block(0,0,N1,computed_rank);
-				// Ar_modified = Ar.block(0,0,computed_rank,N2);
 				return;
 			}
 			v=row;
@@ -419,8 +412,6 @@ public:
 			u	=	col/row(int(col_index));
 			Uvec.push_back(u);
 			Vvec.push_back(v);
-			// Ac.col(computed_rank) = col;
-			// Ar.row(computed_rank) = row;
 			AcVec.push_back(col);
 			ArVec.push_back(row);
 			remaining_col_ind.erase(col_index);
@@ -454,16 +445,8 @@ public:
 					}
 				}
 				u	=	col/row(int(col_index));
-				// if(u.norm()< tol_robust || v.norm()< tol_robust) {
-				// 	row_bases.pop_back();
-				// 	col_bases.pop_back();
-				// 	// std::cout << "break" << std::endl;
-				// 	break;
-				// }
 				Uvec.push_back(u);
 				Vvec.push_back(v);
-				// Ac.col(computed_rank) = col_temp;
-				// Ar.row(computed_rank) = row_temp;
 				AcVec.push_back(col_temp);
 				ArVec.push_back(row_temp);
 
@@ -478,18 +461,7 @@ public:
 				}
 				normS	=	sqrt(normS);
 				this->maxAbsVector(col, remaining_row_ind, max, row_index);
-				// std::cout << "check: " << (u.norm()*v.norm() > tol_ACA*normS) << std::endl;
-				// std::cout << "uv: " << u.norm()*v.norm() << std::endl;
-				// std::cout << "ts: " << tol_ACA*normS << std::endl;
-				// std::cout << "tol_ACA: " << tol_ACA << std::endl;
 			}
-			//////////
-			// for (size_t i = 0; i < Uvec.size(); i++) {
-			// 	std::cout << "i: " << i << std::endl << Uvec[i] << std::endl;
-			// }
-			// for (size_t i = 0; i < Vvec.size(); i++) {
-			// 	std::cout << "i: " << i << std::endl << Vvec[i] << std::endl;
-			// }
 			L = Mat::Zero(computed_rank, computed_rank);
 			R = Mat::Zero(computed_rank, computed_rank);
 			if(computed_rank > 0) {
@@ -523,8 +495,6 @@ public:
 				}
 			}
 			if (l_local == N2) {
-				// Ac_modified = Ac.block(0,0,N1,computed_rank);
-				// Ar_modified = Ar.block(0,0,computed_rank,N2);
 				Ac = Mat(N1,computed_rank);
 				Ar = Mat(computed_rank,N2);
 				return;
@@ -537,8 +507,6 @@ public:
 			u	=	row/col(int(row_index));
 			Uvec.push_back(u);
 			Vvec.push_back(v);
-			// Ac.col(computed_rank) = col;
-			// Ar.row(computed_rank) = row;
 			AcVec.push_back(col);
 			ArVec.push_back(row);
 			computed_rank = 1;
@@ -573,15 +541,8 @@ public:
 			    }
 			  }
 			  u	=	row/col(int(row_index));
-			  // if(u.norm()< tol_robust || v.norm()< tol_robust) {
-			  //   col_bases.pop_back();
-			  //   row_bases.pop_back();
-			  //   break;
-			  // }
 			  Uvec.push_back(u);
 			  Vvec.push_back(v);
-				// Ac.col(computed_rank) = col_temp;
-				// Ar.row(computed_rank) = row_temp;
 				AcVec.push_back(col_temp);
 				ArVec.push_back(row_temp);
 
@@ -597,13 +558,6 @@ public:
 			  normS	=	sqrt(normS);
 			  this->maxAbsVector(row, remaining_col_ind, max, col_index);
 			}//while
-			//////////
-			// for (size_t i = 0; i < Uvec.size(); i++) {
-			// 	std::cout << "i: " << i << std::endl << Uvec[i] << std::endl;
-			// }
-			// for (size_t i = 0; i < Vvec.size(); i++) {
-			// 	std::cout << "i: " << i << std::endl << Vvec[i] << std::endl;
-			// }
 			L = Mat::Zero(computed_rank, computed_rank);
 			R = Mat::Zero(computed_rank, computed_rank);
 			if(computed_rank > 0) {
@@ -624,10 +578,8 @@ public:
 					}
 				}
 			 }
-		}//else
+		}
 
-		// Ac_modified = Ac.block(0,0,N1,computed_rank);
-		// Ar_modified = Ar.block(0,0,computed_rank,N2);
 		Ac = Mat(N1,computed_rank);
 		Ar = Mat(computed_rank,N2);
 		for (size_t i = 0; i < computed_rank; i++) {
