@@ -1,3 +1,5 @@
+This library was created by Vaishnavi Gujjula, during the course of her Ph.D.
+
 This library solves linear systems Ax=b, arising out of N-body problems in 2D. Such matrices A arising out of N-body problems are rank-structured. By exploiting this rank-structure, a fast direct sovler is built, that is termed Algebraic Inverse Fast Multipole Method (AIFMM).
 
 For more details please refer[[1](https://arxiv.org/pdf/2301.12704.pdf)].
